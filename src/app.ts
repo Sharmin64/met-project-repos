@@ -7,8 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
-  const a = 29;
-  res.send(a);
+  res.send('This is my first project');
 });
 
 export default app;
