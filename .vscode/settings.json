@@ -5,5 +5,8 @@
     "workbench.preferredHighContrastLightColorTheme": "Learn with Sumit Theme - Dracula version",
     "workbench.preferredLightColorTheme": "Monokai Dimmed",
     "material-icon-theme.activeIconPack": "react_redux",
-    "material-icon-theme.opacity": 0.9
+    "material-icon-theme.opacity": 0.9,
+    "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
+    "terminal.integrated.automationProfile.windows": {},
+    
 }
