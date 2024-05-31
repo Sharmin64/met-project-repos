@@ -27,7 +27,7 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id: string;
-  password: string;
+  password?: string;
   user: Types.ObjectId;
   name: TUsername;
   email: string;
@@ -41,7 +41,6 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  // isActive:'active' | 'blocked';
   isDeleted: boolean;
 };
 

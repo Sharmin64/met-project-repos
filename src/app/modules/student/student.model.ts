@@ -7,8 +7,6 @@ import {
   TStudent,
   TUsername,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -95,95 +93,81 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: [true, 'Id is required'], unique: true },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    maxlength: [20, 'Password can not be more than 20 characters'],
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'User Id is required'],
-    trim: true,
-    unique: true,
-    ref: 'User',
-  },
-  name: {
-    type: userNameSchema,
-    required: true,
-    trim: true,
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female', 'other'],
-      message: `{VALUE} is not supported`,
+const studentSchema = new Schema<TStudent, StudentModel>(
+  {
+    id: { type: String, required: [true, 'Id is required'], unique: true },
+    // password: {
+    //   type: String,
+    //   // required: [true, 'Password is required'],
+    //   maxlength: [20, 'Password can not be more than 20 characters'],
+    // },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User Id is required'],
+      trim: true,
+      unique: true,
+      ref: 'User',
     },
-    required: true,
-    trim: true,
-  },
-  dateOfBirth: { type: String, trim: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} is not a valid email type',
+    name: {
+      type: userNameSchema,
+      required: true,
+      trim: true,
     },
-    trim: true,
-  },
-  contactNo: { type: String, required: true, trim: true },
-  emergencyContactNo: { type: String, required: true, trim: true },
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other'],
+        message: `{VALUE} is not supported`,
+      },
+      required: true,
+      trim: true,
+    },
+    dateOfBirth: { type: String, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} is not a valid email type',
+      },
+      trim: true,
+    },
+    contactNo: { type: String, required: true, trim: true },
+    emergencyContactNo: { type: String, required: true, trim: true },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
 
-  presentAddress: { type: String, required: true, trim: true },
-  parmanentAddress: { type: String, required: true, trim: true },
-  guardian: {
-    type: guardianSchema,
-    required: true,
-    trim: true,
+    presentAddress: { type: String, required: true, trim: true },
+    parmanentAddress: { type: String, required: true, trim: true },
+    guardian: {
+      type: guardianSchema,
+      required: true,
+      trim: true,
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: true,
+      trim: true,
+    },
+    profileImg: { type: String },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  localGuardian: {
-    type: localGuardianSchema,
-    required: true,
-    trim: true,
+  {
+    toJSON: {
+      virtuals: true,
+    },
   },
-  profileImg: { type: String },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  // isActive: {
-  //   type: String,
-  //   enum: ['active', 'blocked'],
-  //   default: 'active',
-  // },
-});
+);
 
-// pre save middleware / hook : will work on create() save()
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook : we will save data ');
-
-  // hashing passaword and save into DB
-
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this; //this refer kore document k
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-// post save middleware / hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
+// virtuals
+studentSchema.virtual('fulName').get(function () {
+  return this.name.firstName + this.name.middleName + this.name.lastName;
 });
 
 // Query middleware
@@ -208,10 +192,5 @@ studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-// creating a custom instance method
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
