@@ -41,26 +41,29 @@ const localGuardianValidationSchema = z.object({
 });
 
 // Validation for Student
-const studentValidationSchema = z.object({
-  id: z.string(),
-  password: z.string().max(20).optional(),
-  user: z.string(), // Assuming this is an ObjectId string
-  name: userNameValidationSchema,
-  gender: z.enum(['male', 'female', 'other']),
-  dateOfBirth: z.string().trim().optional(),
-  email: z.string().email({ message: 'Invalid email address' }).trim(),
-  contactNo: z.string().trim(),
-  emergencyContactNo: z.string().trim(),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string().trim(),
-  parmanentAddress: z.string().trim(),
-  guardian: guardianValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  profileImg: z.string().url().optional(),
-  // isActive: z.enum(['active', 'blocked']).default('active').optional(), // Uncomment if needed
-  isDeleted: z.boolean(),
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20).optional(),
+    student: z.object({
+      user: z.string(), // Assuming this is an ObjectId string
+      name: userNameValidationSchema,
+      gender: z.enum(['male', 'female', 'other']),
+      dateOfBirth: z.string().trim().optional(),
+      email: z.string().email({ message: 'Invalid email address' }).trim(),
+      contactNo: z.string().trim(),
+      emergencyContactNo: z.string().trim(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().trim(),
+      parmanentAddress: z.string().trim(),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      profileImg: z.string().url().optional(),
+    }),
+  }),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};

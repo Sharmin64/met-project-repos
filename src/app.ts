@@ -1,34 +1,24 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import { StudentRoutes } from './app/modules/student/student.routes';
-import { UserRoutes } from './app/modules/users/user.route';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import notFoundRoute from './app/middlewares/notFoundRoute';
+import router from './app/routes';
 const app: Application = express();
 
 // *persers
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/v1/students', StudentRoutes);
-app.use('/api/v1/users', UserRoutes);
+app.use('/api/v1', router);
 
-const getAController = (req: Request, res: Response) => {
+const testing = (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
 };
-app.get('/', getAController);
+app.get('/', testing);
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  const statusCode = 500;
-  const message = err.message || 'Something went wrong!';
+app.use(globalErrorHandler);
 
-  return res.status(statusCode).json({
-    success: false,
-    message,
-    error: err,
-  });
-});
+app.use(notFoundRoute);
 
 export default app;

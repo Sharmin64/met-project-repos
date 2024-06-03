@@ -1,32 +1,28 @@
-import { NextFunction, Request, Response } from 'express';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { UserService } from './user.service';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
+import catchAsync from '../../utils/catchAsync';
 // import studentValidationSchema from '../student/student.zod.validation';
 // import studentvaliadationSchema from '../student/student.validation';
 
-const createStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    // creating  a schema validation using joi
+const createStudent = catchAsync(async (req, res) => {
+  // creating  a schema validation using joi
 
-    const { password, student: studentData } = req.body;
+  const { password, student: studentData } = req.body;
 
-    // ?data validation using zod
-    // const zodParsedData = studentValidationSchema.parse(studentData);
-    // const result = await UserService.createStudentInDB(password, zodParsedData);
-    const result = await UserService.createStudentInDB(password, studentData);
-    res.status(200).json({
-      success: true,
-      message: 'Student is created successfully',
-      data: result,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err) {
-    next(err);
-  }
-};
+  // ?data validation using zod
+  // const zodParsedData = studentValidationSchema.parse(studentData);
+  // const result = await UserService.createStudentInDB(password, zodParsedData);
+  const result = await UserService.createStudentInDB(password, studentData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student is created successfully',
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createStudent,
