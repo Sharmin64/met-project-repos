@@ -31,16 +31,17 @@ export type TStudent = {
   user: Types.ObjectId;
   name: TUsername;
   email: string;
-  dateOfBirth: string;
+  dateOfBirth?: Date;
   gender: 'male' | 'female' | 'other';
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   parmanentAddress: string;
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
+  admissionSemister: Types.ObjectId;
   isDeleted: boolean;
 };
 

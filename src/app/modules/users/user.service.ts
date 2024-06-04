@@ -43,18 +43,3 @@ const createStudentInDB = async (password: string, studentData: TStudent) => {
 export const UserService = {
   createStudentInDB,
 };
-
-// const createStudentInDB = async (studentData: TStudent) => {
-//     if (await Student.isUserExists(studentData.id)) {
-//       throw new Error('User already exists!');
-//     }
-//     const result = await Student.create(studentData); //builtin static method
-
-//     // const student = new Student(studentData); //create an instance
-
-//     // if (await student.isUserExists(studentData.id)) {
-//     //   throw new Error('User already exists!');
-//     // }
-//     // const result = await student.save(); //built in instance method
-//     return result;
-//   };

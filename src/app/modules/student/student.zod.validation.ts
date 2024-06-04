@@ -48,7 +48,7 @@ const createStudentValidationSchema = z.object({
       user: z.string(), // Assuming this is an ObjectId string
       name: userNameValidationSchema,
       gender: z.enum(['male', 'female', 'other']),
-      dateOfBirth: z.string().trim().optional(),
+      dateOfBirth: z.date().optional(),
       email: z.string().email({ message: 'Invalid email address' }).trim(),
       contactNo: z.string().trim(),
       emergencyContactNo: z.string().trim(),
@@ -59,7 +59,9 @@ const createStudentValidationSchema = z.object({
       parmanentAddress: z.string().trim(),
       guardian: guardianValidationSchema,
       localGuardian: localGuardianValidationSchema,
-      profileImg: z.string().url().optional(),
+      admissionSemister: z.string(),
+      profileImg: z.string(),
+      // profileImg: z.string().url().optional(),
     }),
   }),
 });
