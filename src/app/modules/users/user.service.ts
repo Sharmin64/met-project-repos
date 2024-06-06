@@ -27,12 +27,6 @@ const createStudentInDB = async (password: string, payload: TStudent) => {
   userData.id = await generatedStudentId(
     admissionSemister as TAcademicSemister,
   );
-  // test for id
-  // const lastUser = await User.findOne().sort({ id: -1 });
-  // const newId = lastUser
-  //   ? (parseInt(lastUser.id) + 1).toString()
-  //   : '2030100001';
-  // userData.id = newId;
 
   // create a user
   const newUser = await User.create(userData);
