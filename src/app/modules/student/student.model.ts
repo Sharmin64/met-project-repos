@@ -161,6 +161,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: Boolean,
       default: false,
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+    },
   },
   {
     toJSON: {
@@ -170,7 +174,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 );
 
 // virtuals
-studentSchema.virtual('fulName').get(function () {
+studentSchema.virtual('fullName').get(function () {
   return this.name.firstName + this.name.middleName + this.name.lastName;
 });
 

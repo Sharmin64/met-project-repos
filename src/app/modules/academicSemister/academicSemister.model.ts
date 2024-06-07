@@ -5,6 +5,8 @@ import {
   AcademicSemisterName,
   Months,
 } from './academicSemister.constant';
+import AppError from '../../errors/appErrors';
+import httpStatus from 'http-status';
 
 const academicSemisterSchema = new Schema<TAcademicSemister>({
   name: {
@@ -38,7 +40,7 @@ academicSemisterSchema.pre('save', async function (next) {
     name: this.name,
   });
   if (isSemisterExists) {
-    throw new Error('Semister already exists!');
+    throw new AppError(httpStatus.CONFLICT, 'Semister already exists!');
   }
   next();
 });

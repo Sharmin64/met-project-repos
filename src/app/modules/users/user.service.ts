@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
+import mongoose from 'mongoose';
 import config from '../../config';
 import { TAcademicSemister } from '../academicSemister/academicSemister.interface';
 
@@ -9,8 +10,9 @@ import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generatedStudentId } from './user.utils';
+import AppError from '../../errors/appErrors';
+import httpStatus from 'http-status';
 
-// todo apatoto comment  kora thakuk proyojone comment out korbo
 const createStudentInDB = async (password: string, payload: TStudent) => {
   // create a user object
   const userData: Partial<TUser> = {};
@@ -19,27 +21,44 @@ const createStudentInDB = async (password: string, payload: TStudent) => {
   // set student role
   userData.role = 'student';
   // year semisterCode 4 digit number
-  // find academic semister
+  // find academic semister info
   const admissionSemister = await AcademicSemister.findById(
     payload.admissionSemister,
   );
-  // set auto genarated id
-  userData.id = await generatedStudentId(
-    admissionSemister as TAcademicSemister,
-  );
 
-  // create a user
-  const newUser = await User.create(userData);
+  // transaction & rollback system
 
-  // create a student
-  if (Object.keys(newUser).length) {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    userData.id = await generatedStudentId(
+      admissionSemister as TAcademicSemister,
+    );
+
+    // create a user ( transaction -1 )
+    const newUser = await User.create([userData], { session });
+
+    // create a student
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
     // set id , _id as user
-    payload.id = newUser.id; //embedding id
-    payload.user = newUser._id; //reference _id
-
-    const newStudent = await Student.create(payload);
+    payload.id = newUser[0].id; //embedding id
+    payload.user = newUser[0]._id; //reference _id
+    // create a student ( transaction - 2)
+    const newStudent = await Student.create([payload], { session });
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+    await session.commitTransaction();
+    await session.endSession();
     return newStudent;
+  } catch (err) {
+    session.abortTransaction();
+    await session.endSession();
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
   }
+  // set auto genarated id
 };
 
 export const UserService = {

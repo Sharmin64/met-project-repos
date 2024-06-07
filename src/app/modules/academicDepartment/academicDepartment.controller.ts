@@ -11,7 +11,7 @@ const createAcademicDepartment = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic Faculty is created successfully',
+    message: 'Academic department is created successfully',
     data: result,
   });
 });
@@ -26,7 +26,7 @@ const getSingleAcademicDepartment = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic faculty is retrieved succesfully',
+    message: 'Academic department is retrieved succesfully',
     data: result,
   });
 });
@@ -38,23 +38,23 @@ const getAllAcademicDepartments = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic faculties are retrieved successfully',
+    message: 'Academic departments are retrieved successfully',
     data: result,
   });
 });
 
 const updateAcademicDepartment = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const { departmentId } = req.params;
   const result =
     await AcademicDepartmentServices.updateAcademicDepartmentIntoDB(
-      facultyId,
+      departmentId,
       req.body,
     );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic faculty is updated succesfully',
+    message: 'Academic department is updated succesfully',
     data: result,
   });
 });
