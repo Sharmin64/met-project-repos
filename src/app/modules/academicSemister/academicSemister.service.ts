@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import AppError from '../../errors/appErrors';
+import AppError from '../../errors/AppError';
 import { academicSemisterNameCodeMapper } from './academicSemister.constant';
 import { TAcademicSemister } from './academicSemister.interface';
 import { AcademicSemister } from './academicSemister.model';

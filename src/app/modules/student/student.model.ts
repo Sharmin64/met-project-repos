@@ -96,22 +96,16 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: [true, 'Id is required'], unique: true },
-    // password: {
-    //   type: String,
-    //   // required: [true, 'Password is required'],
-    //   maxlength: [20, 'Password can not be more than 20 characters'],
-    // },
+
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User Id is required'],
-      trim: true,
       unique: true,
       ref: 'User',
     },
     name: {
       type: userNameSchema,
       required: true,
-      trim: true,
     },
     gender: {
       type: String,
@@ -120,7 +114,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
         message: `{VALUE} is not supported`,
       },
       required: true,
-      trim: true,
     },
     dateOfBirth: { type: String },
     email: {
@@ -131,31 +124,28 @@ const studentSchema = new Schema<TStudent, StudentModel>(
         validator: (value: string) => validator.isEmail(value),
         message: '{VALUE} is not a valid email type',
       },
-      trim: true,
     },
-    contactNo: { type: String, required: true, trim: true },
-    emergencyContactNo: { type: String, required: true, trim: true },
+    contactNo: { type: String, required: true },
+    emergencyContactNo: { type: String, required: true },
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     },
 
-    presentAddress: { type: String, required: true, trim: true },
-    parmanentAddress: { type: String, required: true, trim: true },
+    presentAddress: { type: String, required: true },
+    parmanentAddress: { type: String, required: true },
     guardian: {
       type: guardianSchema,
-      required: true,
-      trim: true,
+      required: [true, ' guardian information is required'],
     },
     localGuardian: {
       type: localGuardianSchema,
-      required: true,
-      trim: true,
+      required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
     admissionSemister: {
       type: Schema.Types.ObjectId,
-      ref: 'AcademicSemister ',
+      ref: 'AcademicSemister',
     },
     isDeleted: {
       type: Boolean,

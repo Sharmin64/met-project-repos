@@ -10,7 +10,7 @@ import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generatedStudentId } from './user.utils';
-import AppError from '../../errors/appErrors';
+import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
 const createStudentInDB = async (password: string, payload: TStudent) => {
@@ -27,7 +27,6 @@ const createStudentInDB = async (password: string, payload: TStudent) => {
   );
 
   // transaction & rollback system
-
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -43,8 +42,8 @@ const createStudentInDB = async (password: string, payload: TStudent) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
     // set id , _id as user
-    payload.id = newUser[0].id; //embedding id
-    payload.user = newUser[0]._id; //reference _id
+    payload.id = newUser[0].id; // embedding id
+    payload.user = newUser[0]._id; // reference _id
     // create a student ( transaction - 2)
     const newStudent = await Student.create([payload], { session });
     if (!newStudent.length) {
@@ -54,11 +53,17 @@ const createStudentInDB = async (password: string, payload: TStudent) => {
     await session.endSession();
     return newStudent;
   } catch (err) {
-    session.abortTransaction();
+    await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      ' Sorry Failed to create student',
+    );
   }
-  // set auto genarated id
+  //  finally {
+  //   session.endSession();
+  // }
 };
 
 export const UserService = {

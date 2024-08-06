@@ -1,12 +1,13 @@
 import { Schema, model } from 'mongoose';
-import { TAcademicSemister } from './academicSemister.interface';
+
 import {
   AcademicSemisterCode,
   AcademicSemisterName,
   Months,
 } from './academicSemister.constant';
-import AppError from '../../errors/appErrors';
+import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { TAcademicSemister } from './academicSemister.interface';
 
 const academicSemisterSchema = new Schema<TAcademicSemister>({
   name: {

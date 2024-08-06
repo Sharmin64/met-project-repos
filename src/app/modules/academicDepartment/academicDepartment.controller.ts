@@ -45,6 +45,7 @@ const getAllAcademicDepartments = catchAsync(async (req, res) => {
 
 const updateAcademicDepartment = catchAsync(async (req, res) => {
   const { departmentId } = req.params;
+
   const result =
     await AcademicDepartmentServices.updateAcademicDepartmentIntoDB(
       departmentId,
